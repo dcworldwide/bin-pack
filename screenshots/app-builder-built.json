@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Stow",
+      "hasCanvas": false,
+      "bodyTextLen": 1453,
+      "bodyTextHash": "20d613f57d3bc0d77a66c7f07ff3ece2ce11d1f2a6f437ed1fd3cf262d6c3678",
+      "bodyTextPrefix": "Stow Pack a space. See it in 3D. 2 left out 140 cm × 220 cm × 15",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Stow",
+      "hasCanvas": false,
+      "bodyTextLen": 586,
+      "bodyTextHash": "c5e2691f220c7215a7b1f4f94a2c9a395cce92204c3039b665b1e6875a57b96a",
+      "bodyTextPrefix": "Stow Pack a space. See it in 3D. 2 left out X width Y height Z d",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}
