@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { nextColor } from "./colors";
-import { blankProject, defaultProjects, LEGACY_KEY, parsePersisted, STORAGE_KEY } from "./projects";
+import { blankProject, defaultProjects, LEGACY_KEY, parsePersisted, STORAGE_KEY, type PersistedV2 } from "./projects";
 import { itemsFromScenario, SPACE_PRESETS, type Scenario } from "./presets";
 import type { Bin, ItemDef, Project, RotationMode, Unit } from "./types";
 import { clamp, uid } from "./utils";
@@ -34,6 +34,7 @@ type PackState = {
   createProject: () => void;
   selectProject: (id: string) => void;
   deleteProject: () => void;
+  importProjects: (incoming: PersistedV2) => void;
   hydrate: () => void;
 };
 
@@ -178,6 +179,39 @@ export const usePackStore = create<PackState>((set, get) => ({
     if (projects.length < 2) return;
     const rest = projects.filter((p) => p.id !== activeId);
     set((s) => ({ ...applyActive(rest, rest[0]!.id), selectedId: null, cameraNonce: s.cameraNonce + 1 }));
+  },
+  importProjects: (incoming) => {
+    set((s) => {
+      const taken = new Set(s.projects.map((p) => p.id));
+      const idMap = new Map<string, string>();
+      const imported = incoming.projects.map((project) => {
+        let id = project.id;
+        if (taken.has(id)) id = uid("proj");
+        taken.add(id);
+        idMap.set(project.id, id);
+        return { ...project, id };
+      });
+      if (!imported.length) return s;
+      const saved = s.projects.map((p) =>
+        p.id === s.activeId
+          ? {
+              ...p,
+              unit: s.unit,
+              bin: s.bin,
+              items: s.items,
+              spaceId: s.spaceId,
+              explode: s.explode,
+              showLabels: s.showLabels,
+            }
+          : p,
+      );
+      const activeId = idMap.get(incoming.activeId) ?? imported[0]!.id;
+      return {
+        ...applyActive([...saved, ...imported], activeId),
+        selectedId: null,
+        cameraNonce: s.cameraNonce + 1,
+      };
+    });
   },
   hydrate: () => {
     if (get().hydrated) return;

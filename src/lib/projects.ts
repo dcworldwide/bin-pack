@@ -99,6 +99,25 @@ export function defaultProjects(): PersistedV2 {
   return { activeId: project.id, projects: [project] };
 }
 
+export function stowFile(projects: Project[], activeId: string) {
+  return JSON.stringify({ stow: 1, activeId, projects }, null, 2);
+}
+
+export function parseImport(text: string): PersistedV2 | null {
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (!data || typeof data !== "object") return null;
+  const record = data as { projects?: unknown; activeId?: unknown };
+  if (Array.isArray(record.projects)) {
+    return parsePersisted(JSON.stringify({ activeId: record.activeId, projects: record.projects }), null);
+  }
+  return parsePersisted(JSON.stringify({ activeId: "", projects: [data] }), null);
+}
+
 export function parsePersisted(v2raw: string | null, v1raw: string | null): PersistedV2 | null {
   if (v2raw) {
     try {
