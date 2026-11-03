@@ -2,71 +2,20 @@ import { nextColor } from "./colors";
 import type { Bin, ItemDef, RotationMode } from "./types";
 import { uid } from "./utils";
 
-export type SpacePreset = {
-  id: string;
-  name: string;
-  hint: string;
-  bin: Bin;
-};
+export type SpacePreset = { id: string; name: string; hint: string; bin: Bin };
 
 export const SPACE_PRESETS: SpacePreset[] = [
-  {
-    id: "elevator",
-    name: "Residential elevator",
-    hint: "Typical passenger lift",
-    bin: { w: 140, h: 220, d: 150 },
-  },
-  {
-    id: "freight-elevator",
-    name: "Freight elevator",
-    hint: "Service / goods lift",
-    bin: { w: 180, h: 240, d: 250 },
-  },
-  {
-    id: "storage-5x5",
-    name: "5 × 5 storage unit",
-    hint: "5 ft × 5 ft × 8 ft",
-    bin: { w: 152, h: 244, d: 152 },
-  },
-  {
-    id: "storage-5x10",
-    name: "5 × 10 storage unit",
-    hint: "5 ft × 10 ft × 8 ft",
-    bin: { w: 152, h: 244, d: 305 },
-  },
-  {
-    id: "storage-10x10",
-    name: "10 × 10 storage unit",
-    hint: "10 ft × 10 ft × 8 ft",
-    bin: { w: 305, h: 244, d: 305 },
-  },
-  {
-    id: "container-20",
-    name: "20-ft shipping container",
-    hint: "Standard dry van",
-    bin: { w: 235, h: 239, d: 590 },
-  },
-  {
-    id: "closet",
-    name: "Walk-in closet",
-    hint: "Small dressing room",
-    bin: { w: 180, h: 240, d: 120 },
-  },
-  {
-    id: "studio",
-    name: "Studio room",
-    hint: "Single-room apartment",
-    bin: { w: 400, h: 270, d: 350 },
-  },
+  { id: "elevator", name: "Residential elevator", hint: "Typical passenger lift", bin: { w: 140, h: 220, d: 150 } },
+  { id: "freight-elevator", name: "Freight elevator", hint: "Service / goods lift", bin: { w: 180, h: 240, d: 250 } },
+  { id: "storage-5x5", name: "5 × 5 storage unit", hint: "5 ft × 5 ft × 8 ft", bin: { w: 152, h: 244, d: 152 } },
+  { id: "storage-5x10", name: "5 × 10 storage unit", hint: "5 ft × 10 ft × 8 ft", bin: { w: 152, h: 244, d: 305 } },
+  { id: "storage-10x10", name: "10 × 10 storage unit", hint: "10 ft × 10 ft × 8 ft", bin: { w: 305, h: 244, d: 305 } },
+  { id: "container-20", name: "20-ft shipping container", hint: "Standard dry van", bin: { w: 235, h: 239, d: 590 } },
+  { id: "closet", name: "Walk-in closet", hint: "Small dressing room", bin: { w: 180, h: 240, d: 120 } },
+  { id: "studio", name: "Studio room", hint: "Single-room apartment", bin: { w: 400, h: 270, d: 350 } },
 ];
 
-export type CatalogItem = {
-  name: string;
-  w: number;
-  h: number;
-  d: number;
-  rotation: RotationMode;
-};
+export type CatalogItem = { name: string; w: number; h: number; d: number; rotation: RotationMode };
 
 export const ITEM_CATALOG: CatalogItem[] = [
   { name: "Small box", w: 35, h: 35, d: 35, rotation: "free" },

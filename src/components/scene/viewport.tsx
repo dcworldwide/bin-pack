@@ -1,13 +1,12 @@
 import { Maximize2, RotateCcw, Tag } from "lucide-react";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { usePackStore } from "@/lib/store";
 import type { PackResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const PackingCanvas = lazy(() =>
-  import("./packing-canvas").then((m) => ({ default: m.PackingCanvas })),
-);
+const PackingCanvas = lazy(() => import("./packing-canvas").then((m) => ({ default: m.PackingCanvas })));
 
 export function Viewport({ result }: { result: PackResult }) {
   const bin = usePackStore((s) => s.bin);
@@ -28,7 +27,7 @@ export function Viewport({ result }: { result: PackResult }) {
     <section className="relative flex min-h-[42vh] flex-1 flex-col overflow-hidden bg-background lg:min-h-0">
       <div className="absolute inset-0">
         {mounted ? (
-          <Suspense fallback={<ViewportFallback />}>
+          <Suspense fallback={<div className="h-full w-full bg-background" />}>
             <PackingCanvas
               bin={bin}
               placements={result.placements}
@@ -41,17 +40,15 @@ export function Viewport({ result }: { result: PackResult }) {
             />
           </Suspense>
         ) : (
-          <ViewportFallback />
+          <div className="h-full w-full bg-background" />
         )}
       </div>
-
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between p-3 sm:p-4">
-        <AxisLegend />
-        <div className="pointer-events-auto flex items-center gap-1 rounded-xl bg-background/80 p-1 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-end p-3 sm:p-4">
+        <div className="pointer-events-auto flex items-center gap-1 rounded-xl bg-background/80 p-1 pr-2.5 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Toggle dimension labels"
+            aria-label="Toggle edge dimensions"
             onClick={() => setShowLabels(!showLabels)}
             className={cn(showLabels && "bg-muted")}
           >
@@ -60,54 +57,24 @@ export function Viewport({ result }: { result: PackResult }) {
           <Button variant="ghost" size="icon-sm" aria-label="Reset camera" onClick={resetCamera}>
             <RotateCcw />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Fit view"
-            onClick={resetCamera}
-            className="hidden sm:inline-flex"
-          >
+          <Button variant="ghost" size="icon-sm" aria-label="Fit view" onClick={resetCamera} className="hidden sm:inline-flex">
             <Maximize2 />
           </Button>
-        </div>
-      </div>
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:p-4">
-        <div className="pointer-events-auto mx-auto flex max-w-md items-center gap-3 rounded-xl bg-background/80 px-3 py-2 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
-          <span className="w-16 shrink-0 text-[11px] font-medium tracking-wide text-muted-foreground">
-            Explode
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={Math.round(explode * 100)}
-            onChange={(e) => setExplode(Number(e.target.value) / 100)}
-            className="h-11 w-full cursor-pointer accent-primary"
-            aria-label="Explode packing"
-          />
+          <span className="mx-1 hidden h-4 w-px bg-border sm:block" aria-hidden />
+          <label className="flex items-center gap-2 pl-1">
+            <span className="hidden text-[11px] font-medium tracking-wide text-muted-foreground sm:inline">Explode</span>
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={[Math.round(explode * 100)]}
+              onValueChange={(v) => setExplode((v[0] ?? 0) / 100)}
+              aria-label="Explode packing"
+              className="w-24 sm:w-28"
+            />
+          </label>
         </div>
       </div>
     </section>
   );
-}
-
-function AxisLegend() {
-  return (
-    <ul className="pointer-events-none space-y-1 rounded-xl bg-background/80 px-3 py-2 font-mono text-[10px] tracking-wide text-muted-foreground shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
-      <li className="flex items-center gap-2">
-        <span className="size-1.5 rounded-full bg-axis-x" /> X width
-      </li>
-      <li className="flex items-center gap-2">
-        <span className="size-1.5 rounded-full bg-axis-y" /> Y height
-      </li>
-      <li className="flex items-center gap-2">
-        <span className="size-1.5 rounded-full bg-axis-z" /> Z depth
-      </li>
-    </ul>
-  );
-}
-
-function ViewportFallback() {
-  return <div className="h-full w-full bg-background" aria-hidden />;
 }

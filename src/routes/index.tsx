@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Box, Layers } from "lucide-react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 import { ItemList } from "@/components/item-list";
+import { ProjectBar } from "@/components/project-bar";
 import { ResultPanel } from "@/components/result-panel";
 import { Viewport } from "@/components/scene/viewport";
 import { SpacePanel } from "@/components/space-panel";
@@ -15,42 +16,41 @@ export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   const hydrate = usePackStore((s) => s.hydrate);
+  const hydrated = usePackStore((s) => s.hydrated);
   const bin = usePackStore((s) => s.bin);
   const items = usePackStore((s) => s.items);
   const unit = usePackStore((s) => s.unit);
+  const [tab, setTab] = useState<"space" | "items" | "result">("space");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     hydrate();
   }, [hydrate]);
 
   const result = useMemo(() => packBin(bin, items), [bin, items]);
   const leftover = result.unpacked.length;
-  const [tab, setTab] = useState<"space" | "items" | "result">("space");
 
   return (
     <main className="flex min-h-dvh flex-col bg-background text-foreground lg:h-dvh lg:overflow-hidden">
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-6">
-        <div className="min-w-0">
-          <p className="font-display text-xl font-medium tracking-tight text-foreground">Stow</p>
-          <p className="truncate text-xs text-muted-foreground">Pack a space. See it in 3D.</p>
+      <header className="flex shrink-0 flex-col gap-3 border-b border-border px-4 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-display text-xl font-medium tracking-tight text-foreground">Stow</p>
+            <p className="truncate text-xs text-muted-foreground">Pack a space. See it in 3D.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant={leftover > 0 ? "danger" : result.placements.length ? "ok" : "default"}>
+              {leftover > 0 ? `${leftover} left out` : result.placements.length ? "Fits" : "Empty"}
+            </Badge>
+            <span className="hidden font-mono text-[11px] tabular-nums text-muted-foreground md:inline">
+              {formatLen(bin.w, unit)} × {formatLen(bin.h, unit)} × {formatLen(bin.d, unit)}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={leftover > 0 ? "danger" : result.placements.length ? "ok" : "default"}>
-            {leftover > 0
-              ? `${leftover} left out`
-              : result.placements.length
-                ? "Fits"
-                : "Empty"}
-          </Badge>
-          <span className="hidden font-mono text-[11px] tabular-nums text-muted-foreground sm:inline">
-            {formatLen(bin.w, unit)} × {formatLen(bin.h, unit)} × {formatLen(bin.d, unit)}
-          </span>
-        </div>
+        <ProjectBar />
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+      <div className={cn("flex min-h-0 flex-1 flex-col lg:flex-row", !hydrated && "opacity-0")}>
         <Viewport result={result} />
-
         <aside className="flex w-full shrink-0 flex-col border-t border-border bg-card lg:h-full lg:w-[380px] lg:border-t-0 lg:border-l">
           <nav className="flex shrink-0 gap-1 border-b border-border p-2 lg:hidden">
             <TabBtn active={tab === "space"} onClick={() => setTab("space")} icon={<Box className="size-4" />}>
@@ -63,7 +63,6 @@ function Home() {
               Result
             </TabBtn>
           </nav>
-
           <div className="hidden min-h-0 flex-1 flex-col overflow-y-auto lg:flex">
             <section className="border-b border-border p-5">
               <SpacePanel />
@@ -75,7 +74,6 @@ function Home() {
               <ResultPanel result={result} />
             </section>
           </div>
-
           <div className="min-h-0 flex-1 overflow-y-auto p-4 lg:hidden">
             {tab === "space" && <SpacePanel />}
             {tab === "items" && <ItemList />}
@@ -87,17 +85,7 @@ function Home() {
   );
 }
 
-function TabBtn({
-  active,
-  onClick,
-  children,
-  icon,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: ReactNode;
-  icon?: ReactNode;
-}) {
+function TabBtn({ active, onClick, children, icon }: { active: boolean; onClick: () => void; children: ReactNode; icon?: ReactNode }) {
   return (
     <button
       type="button"

@@ -29,7 +29,6 @@ export function ResultPanel({ result }: { result: PackResult }) {
           {packedCount === 0 && leftoverCount === 0 ? "Empty" : ok ? "All fit" : "Won't all fit"}
         </Badge>
       </header>
-
       <div className="space-y-2">
         <div className="flex items-baseline justify-between font-mono text-xs tabular-nums text-muted-foreground">
           <span>Fill</span>
@@ -45,7 +44,6 @@ export function ResultPanel({ result }: { result: PackResult }) {
           {formatVolume(result.usedVolume, unit)} used · {formatVolume(remaining, unit)} free
         </p>
       </div>
-
       {leftoverCount > 0 && (
         <div className="rounded-xl bg-destructive/10 p-3 shadow-[0_0_0_1px_rgba(180,92,78,0.28)]">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-destructive">
@@ -55,11 +53,7 @@ export function ResultPanel({ result }: { result: PackResult }) {
           <ul className="space-y-2">
             {result.unpacked.map((u) => (
               <li key={u.instanceId} className="text-xs leading-relaxed">
-                <button
-                  type="button"
-                  className="text-left text-foreground"
-                  onClick={() => setSelected(u.itemId)}
-                >
+                <button type="button" className="text-left text-foreground" onClick={() => setSelected(u.itemId)}>
                   {u.name}
                 </button>
                 <span className="mt-0.5 block text-muted-foreground">{u.reason}</span>
@@ -68,24 +62,22 @@ export function ResultPanel({ result }: { result: PackResult }) {
           </ul>
         </div>
       )}
-
       {ok && (
         <div className="flex items-start gap-2 rounded-xl bg-ok/10 p-3 text-xs leading-relaxed text-foreground shadow-[0_0_0_1px_rgba(125,154,126,0.28)]">
           <Check className="mt-0.5 size-4 shrink-0 text-ok" />
-          Everything fits. Drag the view to inspect, or explode the stack to see each piece.
+          Everything fits. Hover a piece for its size. Dimensions sit on the edges of the space.
         </div>
       )}
-
       {packedCount > 0 && (
         <ul className="max-h-48 space-y-1 overflow-auto pr-1">
           {result.placements.map((p) => (
             <li key={p.instanceId}>
               <button
                 type="button"
-                onClick={() => setSelected(p.instanceId)}
+                onClick={() => setSelected(p.itemId)}
                 className={cn(
                   "flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-xs transition-colors duration-150 hover:bg-muted",
-                  selectedId === p.instanceId && "bg-muted",
+                  selectedId === p.itemId && "bg-muted",
                 )}
               >
                 <span className="size-2.5 shrink-0 rounded-sm" style={{ background: p.color }} />

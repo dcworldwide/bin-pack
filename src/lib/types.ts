@@ -5,11 +5,8 @@ export type RotationMode = "free" | "upright" | "none";
 export type ItemDef = {
   id: string;
   name: string;
-  /** Width along X, stored in centimeters. */
   w: number;
-  /** Height along Y, stored in centimeters. */
   h: number;
-  /** Depth along Z, stored in centimeters. */
   d: number;
   qty: number;
   color: string;
@@ -54,4 +51,15 @@ export type PackResult = {
   unpackedVolume: number;
   binVolume: number;
   fillRatio: number;
+};
+
+export type Project = {
+  id: string;
+  name: string;
+  unit: Unit;
+  bin: Bin;
+  items: ItemDef[];
+  spaceId: string | null;
+  explode: number;
+  showLabels: boolean;
 };

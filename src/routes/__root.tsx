@@ -11,10 +11,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
-      {
-        name: "description",
-        content: "Pack any space in 3D. Enter a room, elevator, or crate and see how your objects fit.",
-      },
+      { name: "description", content: "Pack a space. See it in 3D." },
       { name: "theme-color", content: "#0c0d0f" },
     ],
     links: [
@@ -25,11 +22,11 @@ export const Route = createRootRoute({
     ],
   }),
   component: () => (
-    <html lang="en" className="antialiased" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body className="bg-background text-foreground">
+      <body>
         <PreviewHostBridge />
         <AuthProvider>
           <Outlet />

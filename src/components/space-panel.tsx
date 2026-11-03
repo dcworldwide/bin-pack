@@ -23,18 +23,13 @@ export function SpacePanel() {
       <header className="space-y-1">
         <h2 className="font-medium text-foreground">The space</h2>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          Elevator, storage unit, crate — any rectangular volume.
+          Elevator, storage unit, crate — any rectangular volume. Each project keeps its own space and objects.
         </p>
       </header>
 
       <div className="grid grid-cols-2 gap-2">
         <Field label="Preset">
-          <NativeSelect
-            value={spaceId ?? ""}
-            onChange={(v) => {
-              if (v) applySpacePreset(v);
-            }}
-          >
+          <NativeSelect value={spaceId ?? ""} onChange={(v) => v && applySpacePreset(v)}>
             <option value="">Custom</option>
             {SPACE_PRESETS.map((p) => (
               <option key={p.id} value={p.id}>
@@ -55,21 +50,9 @@ export function SpacePanel() {
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <DimInput
-          label="Width X"
-          value={roundForUnit(bin.w, unit)}
-          onCommit={(n) => setBin({ w: toCm(n, unit) })}
-        />
-        <DimInput
-          label="Height Y"
-          value={roundForUnit(bin.h, unit)}
-          onCommit={(n) => setBin({ h: toCm(n, unit) })}
-        />
-        <DimInput
-          label="Depth Z"
-          value={roundForUnit(bin.d, unit)}
-          onCommit={(n) => setBin({ d: toCm(n, unit) })}
-        />
+        <DimInput label="Width X" value={roundForUnit(bin.w, unit)} onCommit={(n) => setBin({ w: toCm(n, unit) })} />
+        <DimInput label="Height Y" value={roundForUnit(bin.h, unit)} onCommit={(n) => setBin({ h: toCm(n, unit) })} />
+        <DimInput label="Depth Z" value={roundForUnit(bin.d, unit)} onCommit={(n) => setBin({ d: toCm(n, unit) })} />
       </div>
 
       <div className="space-y-2">
@@ -94,15 +77,13 @@ export function SpacePanel() {
 
 export function AddItemBar() {
   const addItem = usePackStore((s) => s.addItem);
-
   return (
     <div className="grid grid-cols-[1fr_auto] gap-2">
       <NativeSelect
         value=""
         onChange={(v) => {
           const cat = ITEM_CATALOG.find((c) => c.name === v);
-          if (!cat) return;
-          addItem({ ...cat });
+          if (cat) addItem({ ...cat });
         }}
       >
         <option value="">Add from catalog…</option>
@@ -112,25 +93,14 @@ export function AddItemBar() {
           </option>
         ))}
       </NativeSelect>
-      <Button
-        variant="secondary"
-        onClick={() => addItem({ name: "Custom item", w: 50, h: 40, d: 40, rotation: "free" })}
-      >
+      <Button variant="secondary" onClick={() => addItem({ name: "Custom item", w: 50, h: 40, d: 40, rotation: "free" })}>
         Custom
       </Button>
     </div>
   );
 }
 
-export function DimInput({
-  label,
-  value,
-  onCommit,
-}: {
-  label: string;
-  value: number;
-  onCommit: (n: number) => void;
-}) {
+export function DimInput({ label, value, onCommit }: { label: string; value: number; onCommit: (n: number) => void }) {
   return (
     <Field label={label}>
       <Input
@@ -190,13 +160,7 @@ export function NativeSelect({
   );
 }
 
-export function RotationSelect({
-  value,
-  onChange,
-}: {
-  value: RotationMode;
-  onChange: (v: RotationMode) => void;
-}) {
+export function RotationSelect({ value, onChange }: { value: RotationMode; onChange: (v: RotationMode) => void }) {
   return (
     <NativeSelect
       value={value}
