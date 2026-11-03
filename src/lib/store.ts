@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { nextColor } from "./colors";
 import { blankProject, defaultProjects, LEGACY_KEY, parsePersisted, STORAGE_KEY, type PersistedV2 } from "./projects";
-import { itemsFromScenario, SPACE_PRESETS, type Scenario } from "./presets";
+import { SPACE_PRESETS } from "./presets";
 import type { Bin, ItemDef, Project, RotationMode, Unit } from "./types";
 import { clamp, uid } from "./utils";
 
@@ -20,7 +20,6 @@ type PackState = {
   setUnit: (unit: Unit) => void;
   setBin: (partial: Partial<Bin>) => void;
   applySpacePreset: (id: string) => void;
-  loadScenario: (scenario: Scenario) => void;
   addItem: (item?: Partial<ItemDef>) => void;
   updateItem: (id: string, partial: Partial<ItemDef>) => void;
   removeItem: (id: string) => void;
@@ -107,15 +106,6 @@ export const usePackStore = create<PackState>((set, get) => ({
     const preset = SPACE_PRESETS.find((p) => p.id === id);
     if (!preset) return;
     set((s) => ({ ...withActive(s, { bin: { ...preset.bin }, spaceId: id }), cameraNonce: s.cameraNonce + 1 }));
-  },
-  loadScenario: (scenario) => {
-    const space = SPACE_PRESETS.find((p) => p.id === scenario.spaceId);
-    if (!space) return;
-    set((s) => ({
-      ...withActive(s, { bin: { ...space.bin }, items: itemsFromScenario(scenario), spaceId: space.id }),
-      selectedId: null,
-      cameraNonce: s.cameraNonce + 1,
-    }));
   },
   addItem: (item) => {
     const items = get().items;

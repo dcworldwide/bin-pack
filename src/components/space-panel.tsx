@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ITEM_CATALOG, SCENARIOS, SPACE_PRESETS } from "@/lib/presets";
+import { ITEM_CATALOG, SPACE_PRESETS } from "@/lib/presets";
 import { usePackStore } from "@/lib/store";
 import type { RotationMode, Unit } from "@/lib/types";
 import { parsePositive, roundForUnit, toCm } from "@/lib/units";
@@ -16,7 +16,6 @@ export function SpacePanel() {
   const setBin = usePackStore((s) => s.setBin);
   const spaceId = usePackStore((s) => s.spaceId);
   const applySpacePreset = usePackStore((s) => s.applySpacePreset);
-  const loadScenario = usePackStore((s) => s.loadScenario);
 
   return (
     <div className="space-y-5">
@@ -53,23 +52,6 @@ export function SpacePanel() {
         <DimInput label="Width X" value={roundForUnit(bin.w, unit)} onCommit={(n) => setBin({ w: toCm(n, unit) })} />
         <DimInput label="Height Y" value={roundForUnit(bin.h, unit)} onCommit={(n) => setBin({ h: toCm(n, unit) })} />
         <DimInput label="Depth Z" value={roundForUnit(bin.d, unit)} onCommit={(n) => setBin({ d: toCm(n, unit) })} />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Try a sample load</Label>
-        <div className="flex flex-col gap-2">
-          {SCENARIOS.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              onClick={() => loadScenario(s)}
-              className="rounded-lg bg-muted/60 px-3 py-2.5 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.06)] transition-colors duration-150 hover:bg-muted"
-            >
-              <div className="text-sm font-medium text-foreground">{s.name}</div>
-              <div className="text-xs leading-relaxed text-muted-foreground">{s.blurb}</div>
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
