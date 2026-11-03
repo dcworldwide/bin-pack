@@ -31,22 +31,20 @@ function Home() {
 
   return (
     <main className="flex min-h-dvh flex-col bg-background text-foreground lg:h-dvh lg:overflow-hidden">
-      <header className="flex shrink-0 flex-col gap-3 border-b border-border px-4 py-3 sm:px-6">
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-display text-xl font-medium tracking-tight text-foreground">Stow</p>
-            <p className="truncate text-xs text-muted-foreground">Pack a space. See it in 3D.</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant={leftover > 0 ? "danger" : result.placements.length ? "ok" : "default"}>
-              {leftover > 0 ? `${leftover} left out` : result.placements.length ? "Fits" : "Empty"}
-            </Badge>
-            <span className="hidden font-mono text-[11px] tabular-nums text-muted-foreground md:inline">
-              {formatLen(bin.w, unit)} × {formatLen(bin.h, unit)} × {formatLen(bin.d, unit)}
-            </span>
-          </div>
+      <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border px-4 py-2.5 sm:px-6">
+        <div className="min-w-0 shrink-0">
+          <p className="font-display text-lg font-medium tracking-tight text-foreground">Stow</p>
+          <p className="truncate text-xs text-muted-foreground">Pack a space. See it in 3D.</p>
         </div>
         <ProjectBar />
+        <div className="ml-auto flex items-center gap-2">
+          <Badge variant={leftover > 0 ? "danger" : result.placements.length ? "ok" : "default"}>
+            {leftover > 0 ? `${leftover} left out` : result.placements.length ? "Fits" : "Empty"}
+          </Badge>
+          <span className="hidden font-mono text-[11px] tabular-nums text-muted-foreground md:inline">
+            {formatLen(bin.w, unit)} × {formatLen(bin.h, unit)} × {formatLen(bin.d, unit)}
+          </span>
+        </div>
       </header>
 
       <div className={cn("flex min-h-0 flex-1 flex-col lg:flex-row", !hydrated && "opacity-0")}>

@@ -62,6 +62,17 @@ function applyActive(projects: Project[], activeId: string) {
   };
 }
 
+function uniqueProjectName(projects: Project[], exceptId: string) {
+  const taken = new Set(
+    projects.filter((p) => p.id !== exceptId).map((p) => p.name.trim().toLowerCase()),
+  );
+  if (!taken.has("project")) return "Project";
+  for (let i = 2; i < 100; i++) {
+    const candidate = `Project ${i}`;
+    if (!taken.has(candidate.toLowerCase())) return candidate;
+  }
+  return "Project";
+}
 function withActive(state: PackState, partial: Partial<Project>): Pick<PackState, "projects" | "activeId" | "unit" | "bin" | "items" | "spaceId" | "explode" | "showLabels"> {
   const projects = state.projects.map((p) => (p.id === state.activeId ? { ...p, ...partial } : p));
   const active = projects.find((p) => p.id === state.activeId)!;
@@ -136,7 +147,8 @@ export const usePackStore = create<PackState>((set, get) => ({
   setExplode: (v) => set((s) => withActive(s, { explode: clamp(v, 0, 1) })),
   setShowLabels: (v) => set((s) => withActive(s, { showLabels: v })),
   resetCamera: () => set({ cameraNonce: get().cameraNonce + 1 }),
-  renameProject: (name) => set((s) => withActive(s, { name: name.slice(0, 60) })),
+  renameProject: (name) =>
+    set((s) => withActive(s, { name: name.trim().slice(0, 60) || uniqueProjectName(s.projects, s.activeId) })),
   createProject: () => {
     const fresh = blankProject("New project");
     set((s) => ({
